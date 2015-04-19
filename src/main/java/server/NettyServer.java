@@ -1,4 +1,4 @@
-package pyramid;
+package server;
 
 import io.netty.bootstrap.ServerBootstrap;
 
@@ -31,7 +31,7 @@ public class NettyServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new PyramidServiceHandler());
+                            ch.pipeline().addLast(new DispatcherServletChannelInitializer());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)

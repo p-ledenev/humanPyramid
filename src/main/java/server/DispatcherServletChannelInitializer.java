@@ -1,6 +1,5 @@
-package pyramid;
+package server;
 
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -16,16 +15,17 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
 import javax.servlet.ServletException;
 
 /**
  * Created by DiKey on 19.04.2015.
  */
-public class PyramidServiceHandler extends ChannelInboundHandlerAdapter {
+public class DispatcherServletChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final DispatcherServlet dispatcherServlet;
 
-    public PyramidServiceHandler() throws ServletException {
+    public DispatcherServletChannelInitializer() throws ServletException {
 
         MockServletContext servletContext = new MockServletContext();
         MockServletConfig servletConfig = new MockServletConfig(servletContext);
@@ -38,5 +38,29 @@ public class PyramidServiceHandler extends ChannelInboundHandlerAdapter {
 
         this.dispatcherServlet = new DispatcherServlet(wac);
         this.dispatcherServlet.init(servletConfig);
+    }
+
+    @Override
+    public void initChannel(SocketChannel channel) throws Exception {
+        // Create a default pipeline implementation.
+        ChannelPipeline pipeline = channel.pipeline();
+
+        // Uncomment the following line if you want HTTPS
+        //SSLEngine engine = SecureChatSslContextFactory.getServerContext().createSSLEngine();
+        //engine.setUseClientMode(false);
+        //pipeline.addLast("ssl", new SslHandler(engine));
+
+        pipeline.addLast("decoder", new HttpRequestDecoder());
+        pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
+        pipeline.addLast("encoder", new HttpResponseEncoder());
+        pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
+        pipeline.addLast("handler", new ServletNettyHandler(dispatcherServlet));
+    }
+
+
+    @Configuration
+    @EnableWebMvc
+    @ComponentScan(basePackages= "controllers")
+    static class WebConfig extends WebMvcConfigurerAdapter {
     }
 }
