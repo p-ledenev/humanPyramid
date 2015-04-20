@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @Controller
 public class PyramidIndexWeightController {
 
-    public static int SolverTimeout = 40;
+    public static final int SOLVING_TIMEOUT = 3;
 
     @Autowired
     private IHumanPyramidWeightSolver solver;
@@ -37,14 +37,17 @@ public class PyramidIndexWeightController {
         });
 
         try {
-            return future.get(SolverTimeout, TimeUnit.SECONDS);
+            return future.get(SOLVING_TIMEOUT, TimeUnit.SECONDS);
 
         } catch (TimeoutException e) {
+            future.cancel(true);
             throw new TimeoutFailure();
 
         } catch (Throwable e) {
             System.out.println("Exception: " + ExceptionUtils.getStackTrace(e));
             throw new InternalServerFailure();
+        } finally {
+            executor.shutdown();
         }
     }
 
@@ -59,7 +62,7 @@ public class PyramidIndexWeightController {
     @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
     @ResponseBody
     public String handleTimeoutFailure() {
-        return "TimeoutFailure: timeout within " + SolverTimeout + "sec.";
+        return "TimeoutFailure: timeout within " + SOLVING_TIMEOUT + "sec.";
     }
 
     @ExceptionHandler(InternalServerFailure.class)
