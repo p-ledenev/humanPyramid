@@ -1,4 +1,4 @@
-package pyramid.controllers;
+package pyramid.solvers;
 
 /**
  * Created by DiKey on 19.04.2015.

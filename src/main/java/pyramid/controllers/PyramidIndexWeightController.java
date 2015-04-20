@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pyramid.solvers.IHumanPyramidWeightSolver;
+import pyramid.solvers.IncorrectParameterFailure;
 
 import java.util.concurrent.*;
 
@@ -25,8 +26,6 @@ public class PyramidIndexWeightController {
     @ResponseBody
     public String handleRequest(@RequestParam("level") final Integer level,
                                 @RequestParam(value = "index", required = false) final Integer index) {
-
-        validateParams(level, index);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<String> future = executor.submit(new Callable<String>() {
@@ -81,11 +80,5 @@ public class PyramidIndexWeightController {
 
     private boolean shouldComputeOnEdge(Integer level, Integer index) {
         return index == null || index == 0 || index == level;
-    }
-
-    private void validateParams(Integer level, Integer index) {
-
-        if (index != null && index > level)
-            throw new IncorrectParameterFailure("level greater than index");
     }
 }
