@@ -1,4 +1,4 @@
-package server;
+package pyramid.server;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -60,7 +60,7 @@ public class DispatcherServletChannelInitializer extends ChannelInitializer<Sock
 
     @Configuration
     @EnableWebMvc
-    @ComponentScan(basePackages= "controllers")
+    @ComponentScan(basePackages= "pyramid")
     static class WebConfig extends WebMvcConfigurerAdapter {
     }
 }

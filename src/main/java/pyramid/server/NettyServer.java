@@ -1,4 +1,4 @@
-package server;
+package pyramid.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 

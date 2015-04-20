@@ -1,4 +1,4 @@
-package server;
+package pyramid.server;
 
 /**
  * Created by DiKey on 19.04.2015.

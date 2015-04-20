@@ -21,11 +21,13 @@
             <artifactId>netty-transport</artifactId>
             <version>${netty-version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
             <version>${netty-version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
@@ -38,6 +40,7 @@
             <artifactId>geronimo-servlet_3.0_spec</artifactId>
             <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -50,11 +53,25 @@
             <artifactId>spring-context</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -67,7 +84,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>server.Runner</mainClass>
+                            <mainClass>pyramid.server.Runner</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                         </manifest>

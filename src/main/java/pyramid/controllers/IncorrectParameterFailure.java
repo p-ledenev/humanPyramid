@@ -1,4 +1,4 @@
-package controllers;
+package pyramid.controllers;
 
 /**
  * Created by DiKey on 19.04.2015.
