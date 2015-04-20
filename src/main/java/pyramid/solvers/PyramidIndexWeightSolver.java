@@ -1,6 +1,5 @@
 package pyramid.solvers;
 
-import com.google.common.math.BigIntegerMath;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -11,30 +10,26 @@ import java.math.BigInteger;
  */
 
 @Component
-public class HumanPyramidWeightSolver implements IHumanPyramidWeightSolver {
+public class PyramidIndexWeightSolver extends PyramidWeightSolver {
 
-    private double weight0;
+    private int index;
 
-    public HumanPyramidWeightSolver(double weight0) {
-        this.weight0 = weight0;
+    public PyramidIndexWeightSolver(int level, int index) {
+        super(level);
+        this.index = index;
     }
 
-    public HumanPyramidWeightSolver() {
-        this(1);
+    public PyramidIndexWeightSolver() {
+        this(0, 0);
     }
 
-    @Override
-    public Double computeHumanEdgeWeightOn(int level) {
-
-        BigDecimal exponent = BigDecimal.valueOf(2).pow(level);
-
-        return weight0 * (BigDecimal.ONE.subtract(BigDecimal.ONE.divide(exponent)).doubleValue());
+    public void setIndex(int index) {
+        this.index = index;
     }
 
-    @Override
-    public Double computeHumanIndexWeightOn(int level, int index) {
+    public Double computeWeight() {
 
-        validateParams(level, index);
+        validateParams();
 
         BigInteger combinationsSum = BigInteger.ZERO;
         for (int i = 0; i <= index; i++) {
@@ -49,21 +44,13 @@ public class HumanPyramidWeightSolver implements IHumanPyramidWeightSolver {
         BigDecimal decimalCombinationsSum = new BigDecimal(combinationsSum);
         BigDecimal exponent = BigDecimal.valueOf(2).pow(level);
 
-        return (1 + 2 * index - decimalCombinationsSum.divide(exponent).doubleValue()) * weight0;
+        return (1 + 2 * index - decimalCombinationsSum.divide(exponent).doubleValue()) * weight;
     }
 
     private BigInteger combinations(int n, int k) {
         BigInteger nF = factorial(BigInteger.valueOf(n));
         BigInteger kF = factorial(BigInteger.valueOf(k));
         BigInteger nkF = factorial(BigInteger.valueOf(n - k));
-
-        return nF.divide(kF.multiply(nkF));
-    }
-
-    private BigInteger fastCombinations(int n, int k) {
-        BigInteger nF = BigIntegerMath.factorial(n);
-        BigInteger kF = BigIntegerMath.factorial(k);
-        BigInteger nkF = BigIntegerMath.factorial(n - k);
 
         return nF.divide(kF.multiply(nkF));
     }
@@ -76,10 +63,8 @@ public class HumanPyramidWeightSolver implements IHumanPyramidWeightSolver {
         BigInteger factorial = BigInteger.ONE;
         for (BigInteger i = BigInteger.ONE; i.compareTo(n) <= 0; i = i.add(BigInteger.ONE)) {
 
-            if (Thread.interrupted()) {
-                System.out.println("Computation aborted");
-                throw new SolverInterruptedFailure();
-            }
+            if (solverInterrupter.shouldInterrupt())
+                solverInterrupter.interrupt();
 
             factorial = factorial.multiply(i);
         }
@@ -87,9 +72,8 @@ public class HumanPyramidWeightSolver implements IHumanPyramidWeightSolver {
         return factorial;
     }
 
-    private void validateParams(Integer level, Integer index) {
-
-        if (index != null && index > level)
-            throw new IncorrectParameterFailure("level greater than index");
+    private void validateParams() {
+        if (index > level)
+            throw new IncorrectParameterFailure("index greater than level");
     }
 }
