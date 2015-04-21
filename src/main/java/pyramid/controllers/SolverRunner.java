@@ -11,7 +11,7 @@ import java.util.concurrent.*;
  */
 
 @Component
-public class SolverExecutor implements ISolverExecutor {
+public class SolverRunner implements ISolverRunner {
 
     public static final int SOLVING_TIMEOUT = 60;
 
@@ -21,7 +21,7 @@ public class SolverExecutor implements ISolverExecutor {
         this.solver = solver;
     }
 
-    public Double execute() {
+    public Double run() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Double> future = executor.submit(new Callable<Double>() {
 

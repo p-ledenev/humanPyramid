@@ -16,7 +16,7 @@ import pyramid.solvers.IncorrectParameter;
 public class PyramidWeightController {
 
     @Autowired
-    private ISolverExecutor solverExecutor;
+    private ISolverRunner solverExecutor;
 
     @Autowired
     private ISolversFactory solversFactory;
@@ -29,7 +29,7 @@ public class PyramidWeightController {
         IPyramidWeightSolver solver = solversFactory.createExecutor(level, index);
         solverExecutor.setSolver(solver);
 
-        return solverExecutor.execute().toString();
+        return solverExecutor.run().toString();
     }
 
     @ExceptionHandler(IncorrectParameter.class)
@@ -43,7 +43,7 @@ public class PyramidWeightController {
     @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
     @ResponseBody
     public String handleTimeoutFailure() {
-        return "TimeoutFailure: timeout within " + SolverExecutor.SOLVING_TIMEOUT + "sec.";
+        return "TimeoutFailure: timeout within " + SolverRunner.SOLVING_TIMEOUT + "sec.";
     }
 
     @ExceptionHandler(InternalServerFailure.class)

@@ -10,20 +10,23 @@ import java.math.BigInteger;
 public class InterruptibleMath {
 
     public static BigInteger combinations(int n, int k) throws InterruptedException {
-        BigInteger nF = factorial(BigInteger.valueOf(n));
-        BigInteger kF = factorial(BigInteger.valueOf(k));
-        BigInteger nkF = factorial(BigInteger.valueOf(n - k));
 
-        return nF.divide(kF.multiply(nkF));
+        BigInteger bigN = BigInteger.valueOf(n);
+        BigInteger bigK = BigInteger.valueOf(k);
+        BigInteger two = BigInteger.valueOf(2);
+
+        BigInteger bigI = (bigK.multiply(two).compareTo(bigN) > 0) ? bigK : bigN.subtract(bigK);
+
+        BigInteger nF = factorialBetween(bigI.add(BigInteger.ONE), bigN);
+        BigInteger kF = factorial(bigN.subtract(bigI));
+
+        return nF.divide(kF);
     }
 
-    public static BigInteger factorial(BigInteger n) throws InterruptedException {
-
-        if (BigInteger.ZERO.equals(n))
-            return BigInteger.ONE;
+    public static BigInteger factorialBetween(BigInteger k, BigInteger n) throws InterruptedException {
 
         BigInteger factorial = BigInteger.ONE;
-        for (BigInteger i = BigInteger.ONE; i.compareTo(n) <= 0; i = i.add(BigInteger.ONE)) {
+        for (BigInteger i = k.add(BigInteger.ZERO); i.compareTo(n) <= 0; i = i.add(BigInteger.ONE)) {
 
             InterruptPoint.pass();
 
@@ -31,5 +34,9 @@ public class InterruptibleMath {
         }
 
         return factorial;
+    }
+
+    public static BigInteger factorial(BigInteger n) throws InterruptedException {
+        return factorialBetween(BigInteger.ONE, n);
     }
 }
