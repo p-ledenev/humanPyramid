@@ -1,6 +1,6 @@
 package pyramid.solvers;
 
-import pyramid.tools.InterruptedMath;
+import pyramid.tools.InterruptibleMath;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -16,10 +16,10 @@ public class PyramidIndexWeightSolver implements IPyramidWeightSolver {
     private int index;
 
     public PyramidIndexWeightSolver(int level, int index, double weight)
-            throws IncorrectParameterFailure {
+            throws IncorrectParameter {
 
         if (index > level)
-            throw new IncorrectParameterFailure("index greater than level");
+            throw new IncorrectParameter("index greater than level");
 
         this.level = level;
         this.index = index;
@@ -39,9 +39,14 @@ public class PyramidIndexWeightSolver implements IPyramidWeightSolver {
         BigInteger combinationsSum = BigInteger.ZERO;
         for (int i = 0; i <= index; i++) {
 
-            System.out.println("Computing combinations (" + (level + 2) + "," + i + ")");
-            BigInteger combinationNumber = InterruptedMath.combinations(level + 2, i);
-            //System.out.println("combinations: " + combinationNumber);
+            BigInteger combinationNumber;
+
+            try {
+                combinationNumber = InterruptibleMath.combinations(level + 2, i);
+            } catch (InterruptedException e) {
+                System.out.println("Solver interrupted");
+                throw new SolverInterrupted();
+            }
 
             combinationsSum = combinationsSum.add(combinationNumber.multiply(BigInteger.valueOf(1 + index - i)));
         }

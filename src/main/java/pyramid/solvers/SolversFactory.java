@@ -1,18 +1,19 @@
 package pyramid.solvers;
 
-import org.springframework.stereotype.Component;
-
 /**
  * Created by ledenev.p on 21.04.2015.
  */
 
-@Component
 public class SolversFactory implements ISolversFactory {
 
-    @Override
-    public IPyramidWeightSolver createExecutor(int level, int index) {
+    private double weight;
 
-        double weight = 50;
+    public SolversFactory(double weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public IPyramidWeightSolver createExecutor(Integer level, Integer index) {
 
         if (shouldComputeOnEdge(level, index))
             return new PyramidEdgeWeightSolver(level, weight);

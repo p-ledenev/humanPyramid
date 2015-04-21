@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pyramid.solvers.IPyramidWeightSolver;
 import pyramid.solvers.ISolversFactory;
-import pyramid.solvers.IncorrectParameterFailure;
+import pyramid.solvers.IncorrectParameter;
 
 /**
  * Created by DiKey on 19.04.2015.
@@ -32,10 +32,10 @@ public class PyramidWeightController {
         return solverExecutor.execute().toString();
     }
 
-    @ExceptionHandler(IncorrectParameterFailure.class)
+    @ExceptionHandler(IncorrectParameter.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public String handleIncorrectParameterFailure(IncorrectParameterFailure e) {
+    public String handleIncorrectParameterFailure(IncorrectParameter e) {
         return "IncorrectParameterFailure: " + e.getMessage();
     }
 

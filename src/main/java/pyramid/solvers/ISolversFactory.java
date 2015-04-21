@@ -5,5 +5,5 @@ package pyramid.solvers;
  */
 public interface ISolversFactory {
 
-    IPyramidWeightSolver createExecutor(int level, int index);
+    IPyramidWeightSolver createExecutor(Integer level, Integer index);
 }

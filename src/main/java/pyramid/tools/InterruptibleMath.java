@@ -7,9 +7,9 @@ import java.math.BigInteger;
 /**
  * Created by ledenev.p on 21.04.2015.
  */
-public class InterruptedMath {
+public class InterruptibleMath {
 
-    public static BigInteger combinations(int n, int k) {
+    public static BigInteger combinations(int n, int k) throws InterruptedException {
         BigInteger nF = factorial(BigInteger.valueOf(n));
         BigInteger kF = factorial(BigInteger.valueOf(k));
         BigInteger nkF = factorial(BigInteger.valueOf(n - k));
@@ -17,7 +17,7 @@ public class InterruptedMath {
         return nF.divide(kF.multiply(nkF));
     }
 
-    public static BigInteger factorial(BigInteger n) {
+    public static BigInteger factorial(BigInteger n) throws InterruptedException {
 
         if (BigInteger.ZERO.equals(n))
             return BigInteger.ONE;

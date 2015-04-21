@@ -6,12 +6,11 @@ package pyramid.solvers;
 
 public class InterruptPoint {
 
-    public static void pass() throws SolverInterruptedFailure {
+    public static void pass() throws InterruptedException {
 
         if (!Thread.interrupted())
             return;
 
-        System.out.println("Computation aborted");
-        throw new SolverInterruptedFailure();
+        throw new InterruptedException();
     }
 }
