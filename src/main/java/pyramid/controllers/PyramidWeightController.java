@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pyramid.solvers.IPyramidWeightSolver;
+import pyramid.solvers.ISolversFactory;
 import pyramid.solvers.IncorrectParameterFailure;
 
 /**
@@ -12,17 +13,23 @@ import pyramid.solvers.IncorrectParameterFailure;
  */
 
 @Controller
-public class PyramidIndexWeightController {
+public class PyramidWeightController {
 
     @Autowired
-    private SolverExecutor solverExecutor;
+    private ISolverExecutor solverExecutor;
+
+    @Autowired
+    private ISolversFactory solversFactory;
 
     @RequestMapping(value = "/humanEdgeWeight", method = RequestMethod.GET)
     @ResponseBody
     public String handleRequest(@RequestParam("level") final Integer level,
                                 @RequestParam(value = "index", required = false) final Integer index) {
 
-        return solverExecutor.execute(level, index).toString();
+        IPyramidWeightSolver solver = solversFactory.createExecutor(level, index);
+        solverExecutor.setSolver(solver);
+
+        return solverExecutor.execute().toString();
     }
 
     @ExceptionHandler(IncorrectParameterFailure.class)

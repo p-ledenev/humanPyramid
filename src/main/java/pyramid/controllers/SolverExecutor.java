@@ -3,8 +3,6 @@ package pyramid.controllers;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
 import pyramid.solvers.IPyramidWeightSolver;
-import pyramid.solvers.PyramidEdgeWeightSolver;
-import pyramid.solvers.PyramidIndexWeightSolver;
 
 import java.util.concurrent.*;
 
@@ -13,16 +11,21 @@ import java.util.concurrent.*;
  */
 
 @Component
-public class SolverExecutor {
+public class SolverExecutor implements ISolverExecutor {
 
-    public static final int SOLVING_TIMEOUT = 3;
+    public static final int SOLVING_TIMEOUT = 60;
 
-    public Double execute(final Integer level, final Integer index) {
+    private IPyramidWeightSolver solver;
+
+    public void setSolver(IPyramidWeightSolver solver) {
+        this.solver = solver;
+    }
+
+    public Double execute() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Double> future = executor.submit(new Callable<Double>() {
 
             public Double call() throws Exception {
-                IPyramidWeightSolver solver = createSolver(level, index);
                 return solver.computeWeight();
             }
         });
@@ -40,16 +43,5 @@ public class SolverExecutor {
         } finally {
             executor.shutdown();
         }
-    }
-
-    private IPyramidWeightSolver createSolver(Integer level, Integer index) {
-        if (shouldComputeOnEdge(level, index))
-            return new PyramidEdgeWeightSolver(level);
-
-        return new PyramidIndexWeightSolver(level, index);
-    }
-
-    private boolean shouldComputeOnEdge(Integer level, Integer index) {
-        return index == null || index == 0 || index == level;
     }
 }

@@ -2,9 +2,7 @@ package pyramid.solvers.testing;
 
 import org.junit.Before;
 import org.junit.Test;
-import pyramid.solvers.IPyramidWeightSolver;
 import pyramid.solvers.PyramidIndexWeightSolver;
-import pyramid.solvers.SolverInterrupter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,9 +17,7 @@ public class PyramidIndexSolverTest {
 
     @Before
     public void setUp() {
-        solver = new PyramidIndexWeightSolver();
-        solver.setWeight(1);
-        solver.setSolverInterrupter(new SolverInterrupter());
+        solver = new PyramidIndexWeightSolver(0, 0, 1);
     }
 
     @Test

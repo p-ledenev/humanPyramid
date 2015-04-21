@@ -1,6 +1,6 @@
 package pyramid.solvers;
 
-import org.springframework.stereotype.Component;
+import pyramid.tools.InterruptedMath;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -9,18 +9,24 @@ import java.math.BigInteger;
  * Created by ledenev.p on 20.04.2015.
  */
 
-@Component
-public class PyramidIndexWeightSolver extends PyramidWeightSolver {
+public class PyramidIndexWeightSolver implements IPyramidWeightSolver {
 
+    protected double weight;
+    protected int level;
     private int index;
 
-    public PyramidIndexWeightSolver(int level, int index) {
-        super(level);
+    public PyramidIndexWeightSolver(int level, int index, double weight)
+            throws IncorrectParameterFailure {
+
+        validateParams();
+
+        this.level = level;
         this.index = index;
+        this.weight = weight;
     }
 
-    public PyramidIndexWeightSolver() {
-        this(0, 0);
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public void setIndex(int index) {
@@ -29,13 +35,11 @@ public class PyramidIndexWeightSolver extends PyramidWeightSolver {
 
     public Double computeWeight() {
 
-        validateParams();
-
         BigInteger combinationsSum = BigInteger.ZERO;
         for (int i = 0; i <= index; i++) {
 
             System.out.println("Computing combinations (" + (level + 2) + "," + i + ")");
-            BigInteger combinationNumber = combinations(level + 2, i);
+            BigInteger combinationNumber = InterruptedMath.combinations(level + 2, i);
             //System.out.println("combinations: " + combinationNumber);
 
             combinationsSum = combinationsSum.add(combinationNumber.multiply(BigInteger.valueOf(1 + index - i)));
@@ -45,31 +49,6 @@ public class PyramidIndexWeightSolver extends PyramidWeightSolver {
         BigDecimal exponent = BigDecimal.valueOf(2).pow(level);
 
         return (1 + 2 * index - decimalCombinationsSum.divide(exponent).doubleValue()) * weight;
-    }
-
-    private BigInteger combinations(int n, int k) {
-        BigInteger nF = factorial(BigInteger.valueOf(n));
-        BigInteger kF = factorial(BigInteger.valueOf(k));
-        BigInteger nkF = factorial(BigInteger.valueOf(n - k));
-
-        return nF.divide(kF.multiply(nkF));
-    }
-
-    private BigInteger factorial(BigInteger n) {
-
-        if (BigInteger.ZERO.equals(n))
-            return BigInteger.ONE;
-
-        BigInteger factorial = BigInteger.ONE;
-        for (BigInteger i = BigInteger.ONE; i.compareTo(n) <= 0; i = i.add(BigInteger.ONE)) {
-
-            if (solverInterrupter.shouldInterrupt())
-                solverInterrupter.interrupt();
-
-            factorial = factorial.multiply(i);
-        }
-
-        return factorial;
     }
 
     private void validateParams() {

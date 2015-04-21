@@ -1,19 +1,19 @@
 package pyramid.solvers;
 
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * Created by ledenev.p on 20.04.2015.
  */
 
-@Component
-public class PyramidEdgeWeightSolver extends PyramidWeightSolver {
+public class PyramidEdgeWeightSolver implements IPyramidWeightSolver {
 
-    public PyramidEdgeWeightSolver(int level) {
-        super(level);
+    protected double weight;
+    protected int level;
+
+    public PyramidEdgeWeightSolver(int level, double weight) {
+        this.weight = weight;
+        this.level = level;
     }
 
     public Double computeWeight() {

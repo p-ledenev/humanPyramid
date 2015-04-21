@@ -3,13 +3,14 @@ package pyramid.solvers;
 /**
  * Created by DiKey on 20.04.2015.
  */
-public class SolverInterrupter implements ISolverInterrupter {
 
-    public boolean shouldInterrupt() {
-        return Thread.interrupted();
-    }
+public class InterruptPoint {
 
-    public void interrupt() {
+    public static void pass() throws SolverInterruptedFailure {
+
+        if (!Thread.interrupted())
+            return;
+
         System.out.println("Computation aborted");
         throw new SolverInterruptedFailure();
     }

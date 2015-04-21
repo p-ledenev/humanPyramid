@@ -7,14 +7,10 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.ServletException;
 
@@ -33,7 +29,7 @@ public class DispatcherServletChannelInitializer extends ChannelInitializer<Sock
         AnnotationConfigWebApplicationContext wac = new AnnotationConfigWebApplicationContext();
         wac.setServletContext(servletContext);
         wac.setServletConfig(servletConfig);
-        wac.register(WebConfig.class);
+        wac.register(SpringConfig.class);
         wac.refresh();
 
         this.dispatcherServlet = new DispatcherServlet(wac);
@@ -55,12 +51,5 @@ public class DispatcherServletChannelInitializer extends ChannelInitializer<Sock
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
         pipeline.addLast("handler", new ServletNettyHandler(dispatcherServlet));
-    }
-
-
-    @Configuration
-    @EnableWebMvc
-    @ComponentScan(basePackages= "pyramid")
-    static class WebConfig extends WebMvcConfigurerAdapter {
     }
 }
