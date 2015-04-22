@@ -2,6 +2,7 @@ package pyramid.tools;
 
 import pyramid.solvers.InterruptPoint;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -20,6 +21,7 @@ public class InterruptibleMath {
         BigInteger nF = factorialBetween(bigI.add(BigInteger.ONE), bigN);
         BigInteger kF = factorial(bigN.subtract(bigI));
 
+
         return nF.divide(kF);
     }
 
@@ -37,6 +39,22 @@ public class InterruptibleMath {
     }
 
     public static BigInteger factorial(BigInteger n) throws InterruptedException {
+
         return factorialBetween(BigInteger.ONE, n);
+    }
+
+    public static BigDecimal exponential(BigInteger n) throws InterruptedException {
+
+        BigDecimal exponent = BigDecimal.ONE;
+        BigDecimal two = BigDecimal.valueOf(2);
+
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(n) <= 0; i = i.add(BigInteger.ONE)) {
+
+            InterruptPoint.pass();
+
+            exponent = exponent.multiply(two);
+        }
+
+        return exponent;
     }
 }

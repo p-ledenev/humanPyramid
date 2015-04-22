@@ -7,6 +7,8 @@ import pyramid.solvers.IPyramidWeightSolver;
  */
 public interface ISolverRunner {
 
+    public static final int SOLVING_TIMEOUT = 10;
+
     Double run();
 
     void setSolver(IPyramidWeightSolver solver);

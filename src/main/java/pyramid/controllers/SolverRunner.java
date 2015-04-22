@@ -1,7 +1,6 @@
 package pyramid.controllers;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.springframework.stereotype.Component;
 import pyramid.solvers.IPyramidWeightSolver;
 
 import java.util.concurrent.*;
@@ -10,10 +9,7 @@ import java.util.concurrent.*;
  * Created by DiKey on 20.04.2015.
  */
 
-@Component
 public class SolverRunner implements ISolverRunner {
-
-    public static final int SOLVING_TIMEOUT = 60;
 
     private IPyramidWeightSolver solver;
 
@@ -34,12 +30,16 @@ public class SolverRunner implements ISolverRunner {
             return future.get(SOLVING_TIMEOUT, TimeUnit.SECONDS);
 
         } catch (TimeoutException e) {
-            future.cancel(true);
+
+            boolean result = future.cancel(true);
+            System.out.println("Future cancelling result: " + result);
+
             throw new TimeoutFailure();
 
         } catch (Throwable e) {
             System.out.println("Exception: " + ExceptionUtils.getStackTrace(e));
             throw new InternalServerFailure();
+
         } finally {
             executor.shutdown();
         }

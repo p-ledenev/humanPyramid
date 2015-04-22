@@ -8,7 +8,7 @@ public class InterruptPoint {
 
     public static void pass() throws InterruptedException {
 
-        if (!Thread.interrupted())
+        if (!Thread.currentThread().isInterrupted())
             return;
 
         throw new InterruptedException();

@@ -54,6 +54,9 @@ public class PyramidIndexWeightSolver implements IPyramidWeightSolver {
         BigDecimal decimalCombinationsSum = new BigDecimal(combinationsSum);
         BigDecimal exponent = BigDecimal.valueOf(2).pow(level);
 
-        return (1 + 2 * index - decimalCombinationsSum.divide(exponent).doubleValue()) * weight;
+        Double result =(1 + 2 * index - decimalCombinationsSum.divide(exponent).doubleValue()) * weight;
+        System.out.println("Computed value: " + result);
+
+        return result;
     }
 }
