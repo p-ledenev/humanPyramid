@@ -1,15 +1,16 @@
 package pyramid.controllers;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.stereotype.Component;
 import pyramid.solvers.IPyramidWeightSolver;
 
-import java.util.concurrent.*;
-
 /**
- * Created by DiKey on 20.04.2015.
+ * Created by ledenev.p on 22.04.2015.
  */
 
+@Component
 public class SolverRunner implements ISolverRunner {
+
+    public static final int SOLVING_TIMEOUT = 10;
 
     private IPyramidWeightSolver solver;
 
@@ -18,30 +19,30 @@ public class SolverRunner implements ISolverRunner {
     }
 
     public Double run() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<Double> future = executor.submit(new Callable<Double>() {
 
-            public Double call() throws Exception {
-                return solver.computeWeight();
+        final Double[] result = new Double[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result[0] = solver.computeWeight();
             }
         });
 
+        thread.start();
+
         try {
-            return future.get(SOLVING_TIMEOUT, TimeUnit.SECONDS);
-
-        } catch (TimeoutException e) {
-
-            boolean result = future.cancel(true);
-            System.out.println("Future cancelling result: " + result);
-
-            throw new TimeoutFailure();
-
-        } catch (Throwable e) {
-            System.out.println("Exception: " + ExceptionUtils.getStackTrace(e));
-            throw new InternalServerFailure();
-
-        } finally {
-            executor.shutdown();
+            thread.join(1000 * SOLVING_TIMEOUT);
+        } catch (InterruptedException e) {
+            System.out.println("Solver thread was interrupted");
         }
+
+        if (result[0] == null) {
+            thread.stop();
+            System.out.println("Solver thread stopped");
+            throw new TimeoutFailure();
+        }
+
+        return result[0];
     }
+
 }

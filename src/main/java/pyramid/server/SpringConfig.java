@@ -5,8 +5,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import pyramid.controllers.ISolverRunner;
-import pyramid.controllers.SolverRunner;
 import pyramid.solvers.SolversFactory;
 
 /**
@@ -21,10 +19,5 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     @Bean
     public SolversFactory solversFactory() {
         return new SolversFactory(50);
-    }
-
-    @Bean
-    public ISolverRunner solverRunner() {
-        return new SolverRunner();
     }
 }
